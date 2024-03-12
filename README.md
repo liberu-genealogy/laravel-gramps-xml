@@ -7,7 +7,7 @@ This package provides easy-to-use services for reading and writing XML files in 
 To install the package, run the following command in your Laravel project:
 
 ```bash
-composer require laravel-gramps-xml
+composer require liberu/laravel-gramps-xml
 ```
 
 ## Usage
