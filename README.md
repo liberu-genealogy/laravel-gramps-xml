@@ -38,7 +38,7 @@ try {
 To write to an XML file, use the `XmlWriter` service. Here's a basic example:
 
 ```php
-use App\Services\XmlWriter;
+use LaravelGrampsXml\XmlWriter;
 
 $xmlWriter = new XmlWriter();
 $xmlWriter->write('path/to/your/file.xml', $xmlContent);
