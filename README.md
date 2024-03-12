@@ -17,12 +17,20 @@ composer require liberu/laravel-gramps-xml
 To read an XML file, use the `XmlReader` service. Here's a basic example:
 
 ```php
+// Import the XmlReader class
 use App\Services\XmlReader;
 
+// Create an instance of the XmlReader
 $xmlReader = new XmlReader();
-$xmlContent = $xmlReader->read('path/to/your/file.xml');
 
-// $xmlContent will contain the contents of the XML file
+try {
+    // Attempt to read the XML file
+    $xmlContent = $xmlReader->read('path/to/your/file.xml');
+    // If successful, $xmlContent will contain the contents of the XML file
+} catch (Exception $e) {
+    // Handle any errors that occur during the read operation
+    echo "Error reading XML file: " . $e->getMessage();
+}
 ```
 
 ### XmlWriter
