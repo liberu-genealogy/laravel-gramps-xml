@@ -18,7 +18,7 @@ To read an XML file, use the `XmlReader` service. Here's a basic example:
 
 ```php
 // Import the XmlReader class
-use App\Services\XmlReader;
+use LaravelGrampsXml\XmlReader;
 
 // Create an instance of the XmlReader
 $xmlReader = new XmlReader();
