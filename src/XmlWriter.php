@@ -12,3 +12,13 @@ class XmlWriter
         }
     }
 }
+    private function validateXmlContent($xmlContent)
+    {
+        // Add code to validate XML content against grampsxml.dtd format
+        // Return true if valid, false otherwise
+    }
+    private function validateXmlContent($xmlContent)
+    {
+        // Add code to validate XML content against grampsxml.dtd format
+        // Return true if valid, false otherwise
+    }
