@@ -35,7 +35,22 @@ try {
 
 ### XmlWriter
 
-To write to an XML file, use the `XmlWriter` service. Here's a basic example:
+To write to an XML file, use the `XmlWriter` service.
+
+#### Exporting to GRAMPS XML format
+
+To export data to the GRAMPS XML format using `grampsxml.dtd`, you can utilize the `XmlWriter`'s functionality directly. Here's how you can do it:
+
+```php
+use LaravelGrampsXml\XmlWriter;
+
+$xmlWriter = new XmlWriter();
+$content = 'Your data structured according to GRAMPS XML format';
+// Make sure to structure your content according to the GRAMPS XML format
+$xmlWriter->write('path/to/your/grampsxml_file.xml', $content);
+```
+
+This will export the data in the GRAMPS XML format, ready to be used with GRAMPS software. Here's a basic example:
 
 ```php
 use LaravelGrampsXml\XmlWriter;
