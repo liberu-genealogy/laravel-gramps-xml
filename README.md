@@ -36,6 +36,7 @@ try {
 
 To write to an XML file in the GRAMPS XML format, use the `XmlWriter` service. Here's an example:
 
+
 ```php
 use LaravelGrampsXml\XmlWriter;
 
