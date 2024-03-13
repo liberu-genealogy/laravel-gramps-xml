@@ -31,6 +31,12 @@ class XmlReader
                 $person->name = (string) $personData->name;
                 $person->age = (int) $personData->age;
                 // Add more attribute mappings as needed
+            
+                // Map additional attributes defined in the grampsxml.dtd format
+                $person->attribute1 = (string) $personData->attribute1;
+                $person->attribute2 = (string) $personData->attribute2;
+                // Add more attribute mappings as needed
+            
                 $people[] = $person;
             }
 

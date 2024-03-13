@@ -13,7 +13,6 @@ composer require liberu/laravel-gramps-xml
 ## Usage
 
 ### XmlReader
-
 To read an XML file, use the `XmlReader` service. Here's a basic example:
 
 ```php
@@ -35,22 +34,8 @@ try {
 
 ### XmlWriter
 
-To write to an XML file, use the `XmlWriter` service.
+To write to an XML file in the GRAMPS XML format, use the `XmlWriter` service. Here's an example:
 
-#### Exporting to GRAMPS XML format
-
-To export data to the GRAMPS XML format using `grampsxml.dtd`, you can utilize the `XmlWriter`'s functionality directly. Here's how you can do it:
-
-```php
-use LaravelGrampsXml\XmlWriter;
-
-$xmlWriter = new XmlWriter();
-$content = 'Your data structured according to GRAMPS XML format';
-// Make sure to structure your content according to the GRAMPS XML format
-$xmlWriter->write('path/to/your/grampsxml_file.xml', $content);
-```
-
-This will export the data in the GRAMPS XML format, ready to be used with GRAMPS software. Here's a basic example:
 
 ```php
 use LaravelGrampsXml\XmlWriter;
@@ -58,5 +43,17 @@ use LaravelGrampsXml\XmlWriter;
 $xmlWriter = new XmlWriter();
 $xmlWriter->write('path/to/your/file.xml', $xmlContent);
 
-// This will write $xmlContent to the specified XML file
+// Validate the XML content against the grampsxml.dtd format
+if ($xmlWriter->validateXmlContent($xmlContent)) {
+    echo "XML content is valid";
+} else {
+    echo "XML content is not valid";
+}
+
+// This will write $xmlContent to the specified XML file in the GRAMPS XML format
 ```
+private function validateXmlContent($xmlContent)
+{
+    // Add code to validate XML content against grampsxml.dtd format
+    // Return true if valid, false otherwise
+}
