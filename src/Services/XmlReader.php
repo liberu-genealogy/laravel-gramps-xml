@@ -1,20 +1,42 @@
 <?php
 
-namespace LaravelGrampsXml\Services;
-
+use LaravelGrampsXml\XmlReader;
+use SimpleXMLElement;
 use Exception;
+use InvalidArgumentException;
+use App\Models\Person; // Import the Person model from your Laravel application
 
-class XmlReader {
-  public function read($filePath) {
-    if (!is_readable($filePath)) {
-      throw new Exception("File {$filePath} cannot be read");
+class XmlReader
+{
+    public function read(string $filePath): array
+    {
+        if (!file_exists($filePath)) {
+            throw new Exception("File not found: {$filePath}");
+        }
+
+        set_error_handler(function($severity, $message, $file, $line) {
+            throw new InvalidArgumentException($message, $severity);
+        });
+
+        try {
+            $xml = simplexml_load_file($filePath, 'SimpleXMLElement', LIBXML_NOCDATA);
+            if ($xml === false) {
+                throw new InvalidArgumentException("Failed to parse XML file: {$filePath}");
+            }
+
+            $people = [];
+            foreach ($xml->person as $personData) {
+                $person = new Person();
+                // Map the XML data to the Person model attributes
+                $person->name = (string) $personData->name;
+                $person->age = (int) $personData->age;
+                // Add more attribute mappings as needed
+                $people[] = $person;
+            }
+
+            return $people;
+        } finally {
+            restore_error_handler();
+        }
     }
-
-    $xmlContent = file_get_contents($filePath);
-    if ($xmlContent === false) {
-      throw new Exception("Failed to read file {$filePath}");
-    }
-
-    return $xmlContent;
-  }
 }
