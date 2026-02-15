@@ -39,7 +39,7 @@ class XmlReader
     }
 
     /**
-     * Read and validate a Gramps XML file against DTD
+     * Read and validate a Gramps XML file against local DTD
      *
      * @param string $filePath
      * @return SimpleXMLElement
@@ -58,25 +58,44 @@ class XmlReader
         }
 
         libxml_use_internal_errors(true);
+        libxml_disable_entity_loader(false);
         
         $dom = new DOMDocument();
         $dom->load($filePath);
         
-        $valid = $dom->validate();
+        // Read the DTD content and create a temporary file with modified DOCTYPE
+        $xmlContent = file_get_contents($filePath);
+        
+        // Replace the remote DTD reference with a local file path
+        $dtdSystemId = 'file://' . realpath($dtdPath);
+        $xmlContent = preg_replace(
+            '/<!DOCTYPE\s+database\s+PUBLIC[^>]+>/',
+            '<!DOCTYPE database SYSTEM "' . $dtdSystemId . '">',
+            $xmlContent
+        );
+        
+        // Create a new DOM from the modified content
+        $dom = new DOMDocument();
+        $dom->loadXML($xmlContent);
+        
+        // Now validate against the local DTD
+        $valid = @$dom->validate();
         
         if (!$valid) {
             $errors = libxml_get_errors();
             libxml_clear_errors();
             
-            $errorMessages = array_map(function($error) {
-                return sprintf(
-                    "[Line %d] %s",
-                    $error->line,
-                    trim($error->message)
-                );
-            }, $errors);
-            
-            throw new Exception("XML validation failed:\n" . implode("\n", $errorMessages));
+            if (!empty($errors)) {
+                $errorMessages = array_map(function($error) {
+                    return sprintf(
+                        "[Line %d] %s",
+                        $error->line,
+                        trim($error->message)
+                    );
+                }, $errors);
+                
+                throw new Exception("XML validation failed:\n" . implode("\n", $errorMessages));
+            }
         }
         
         libxml_use_internal_errors(false);

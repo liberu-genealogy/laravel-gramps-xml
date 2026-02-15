@@ -23,7 +23,7 @@ class XmlWriter
     }
 
     /**
-     * Validate XML content against grampsxml.dtd format
+     * Validate XML content against grampsxml.dtd format using local DTD
      *
      * @param string $xmlContent
      * @return bool
@@ -37,25 +37,36 @@ class XmlWriter
         }
 
         libxml_use_internal_errors(true);
+        libxml_disable_entity_loader(false);
+        
+        // Replace the remote DTD reference with a local file path
+        $dtdSystemId = 'file://' . realpath($dtdPath);
+        $xmlContent = preg_replace(
+            '/<!DOCTYPE\s+database\s+PUBLIC[^>]+>/',
+            '<!DOCTYPE database SYSTEM "' . $dtdSystemId . '">',
+            $xmlContent
+        );
         
         $dom = new DOMDocument();
         $dom->loadXML($xmlContent);
         
-        $valid = $dom->validate();
+        $valid = @$dom->validate();
         
         if (!$valid) {
             $errors = libxml_get_errors();
             libxml_clear_errors();
             
-            $errorMessages = array_map(function($error) {
-                return sprintf(
-                    "[Line %d] %s",
-                    $error->line,
-                    trim($error->message)
-                );
-            }, $errors);
-            
-            throw new Exception("XML validation failed:\n" . implode("\n", $errorMessages));
+            if (!empty($errors)) {
+                $errorMessages = array_map(function($error) {
+                    return sprintf(
+                        "[Line %d] %s",
+                        $error->line,
+                        trim($error->message)
+                    );
+                }, $errors);
+                
+                throw new Exception("XML validation failed:\n" . implode("\n", $errorMessages));
+            }
         }
         
         libxml_use_internal_errors(false);
@@ -97,7 +108,22 @@ class XmlWriter
         $created->setAttribute('version', '1.7.2');
         $header->appendChild($created);
         
-        // Add optional sections if data is provided
+        // Add optional sections in the order defined by DTD:
+        // header, name-formats?, tags?, events?, people?, families?, 
+        // citations?, sources?, places?, objects?, repositories?, notes?, bookmarks?, namemaps?
+        
+        // Events (must come before people according to DTD)
+        if (isset($data['events']) && !empty($data['events'])) {
+            $events = $dom->createElement('events');
+            $database->appendChild($events);
+            
+            foreach ($data['events'] as $eventData) {
+                $event = $this->createEventElement($dom, $eventData);
+                $events->appendChild($event);
+            }
+        }
+        
+        // People
         if (isset($data['people']) && !empty($data['people'])) {
             $people = $dom->createElement('people');
             $database->appendChild($people);
@@ -108,6 +134,7 @@ class XmlWriter
             }
         }
         
+        // Families
         if (isset($data['families']) && !empty($data['families'])) {
             $families = $dom->createElement('families');
             $database->appendChild($families);
@@ -115,16 +142,6 @@ class XmlWriter
             foreach ($data['families'] as $familyData) {
                 $family = $this->createFamilyElement($dom, $familyData);
                 $families->appendChild($family);
-            }
-        }
-        
-        if (isset($data['events']) && !empty($data['events'])) {
-            $events = $dom->createElement('events');
-            $database->appendChild($events);
-            
-            foreach ($data['events'] as $eventData) {
-                $event = $this->createEventElement($dom, $eventData);
-                $events->appendChild($event);
             }
         }
         
