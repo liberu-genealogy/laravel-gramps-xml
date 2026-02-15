@@ -18,7 +18,7 @@ class XmlWriter extends BaseXmlWriter
      * @param mixed $content Can be array or string
      * @throws Exception
      */
-    public function write($filePath, $content)
+    public function write(string $filePath, $content): void
     {
         // If content is an array, convert it to Gramps XML format
         if (is_array($content)) {

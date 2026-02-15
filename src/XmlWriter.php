@@ -142,7 +142,7 @@ class XmlWriter
     {
         $person = $dom->createElement('person');
         $person->setAttribute('handle', $data['handle'] ?? uniqid('person_'));
-        $person->setAttribute('change', $data['change'] ?? time());
+        $person->setAttribute('change', $data['change'] ?? (string)time());
         $person->setAttribute('id', $data['id'] ?? '');
         
         if (isset($data['priv'])) {
@@ -206,7 +206,7 @@ class XmlWriter
     {
         $family = $dom->createElement('family');
         $family->setAttribute('handle', $data['handle'] ?? uniqid('family_'));
-        $family->setAttribute('change', $data['change'] ?? time());
+        $family->setAttribute('change', $data['change'] ?? (string)time());
         $family->setAttribute('id', $data['id'] ?? '');
         
         if (isset($data['father'])) {
@@ -235,7 +235,7 @@ class XmlWriter
     {
         $event = $dom->createElement('event');
         $event->setAttribute('handle', $data['handle'] ?? uniqid('event_'));
-        $event->setAttribute('change', $data['change'] ?? time());
+        $event->setAttribute('change', $data['change'] ?? (string)time());
         $event->setAttribute('id', $data['id'] ?? '');
         
         if (isset($data['type'])) {
