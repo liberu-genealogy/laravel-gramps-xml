@@ -19,22 +19,10 @@ class XmlReader extends BaseXmlReader
      * @return array
      * @throws Exception
      */
-    public function read(string $filePath): array
+    public function readAsArray(string $filePath): array
     {
         // Use parent's parseGrampsXml method to get structured data
         return $this->parseGrampsXml($filePath);
-    }
-
-    /**
-     * Read Gramps XML file and return SimpleXMLElement
-     *
-     * @param string $filePath
-     * @return SimpleXMLElement
-     * @throws Exception
-     */
-    public function readRaw(string $filePath): SimpleXMLElement
-    {
-        return parent::read($filePath);
     }
 
     /**
@@ -68,3 +56,4 @@ class XmlReader extends BaseXmlReader
         ];
     }
 }
+
